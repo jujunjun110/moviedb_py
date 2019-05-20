@@ -1,10 +1,34 @@
 {
-    "title": [
-        "Pok\u00e9mon Detective Pikachu",
-        "Avengers: Endgame",
-        "Charlie and the Chocolate Factory",
-        "Frozen",
-        "Blade Runner 2049",
-        "Shin Godzilla"
+    "movies": [
+        {
+            "id": 447404,
+            "title": "Pok\u00e9mon Detective Pikachu",
+            "rate": 7.1
+        },
+        {
+            "id": 299534,
+            "title": "Avengers: Endgame",
+            "rate": 8.5
+        },
+        {
+            "id": 118,
+            "title": "Charlie and the Chocolate Factory",
+            "rate": 6.9
+        },
+        {
+            "id": 109445,
+            "title": "Frozen",
+            "rate": 7.3
+        },
+        {
+            "id": 335984,
+            "title": "Blade Runner 2049",
+            "rate": 7.4
+        },
+        {
+            "id": 315011,
+            "title": "Shin Godzilla",
+            "rate": 6.6
+        }
     ]
 }

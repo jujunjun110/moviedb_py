@@ -16,7 +16,7 @@ def main():
 
     final_result = {}
 
-    final_result["title"] = [
+    final_result["movies"] = [
         fetch_movie_detail(movie_id) for movie_id in target_movie_ids
     ]
 
@@ -26,8 +26,13 @@ def main():
 
 def fetch_movie_detail(movie_id: int):
     movie = tmdb.Movies(movie_id)
-    response = movie.info()
-    return movie.title
+    res = movie.info()
+    return {
+        "id": res["id"],
+        "title": res["title"],
+        "rate": res["vote_average"],
+        "director_id": 1,
+    }
 
 
 if __name__ == "__main__":
