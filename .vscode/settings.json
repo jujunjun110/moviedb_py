@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "/Users/j-ito/.local/share/virtualenvs/moviedb_py-lb7Ogm90/bin/python",
+    "python.formatting.provider": "black"
+}
