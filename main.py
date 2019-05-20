@@ -4,7 +4,7 @@ import urllib
 import tmdbsimple as tmdb
 
 
-def fetch_infomations():
+def fetch_information():
     json_filepath = "results/result.json"
     key = os.environ.get("API_KEY")
 
@@ -67,14 +67,13 @@ def fetch_movie_detail(movie_id: int):
     print(res["title"])
 
     return {
-        "id": res["id"],
-        "title": res["title"],
-        "rate": res["vote_average"],
-        "genres": [g["name"] for g in res["genres"][0:2]],
-        "director": fetch_director(movie),
-        "casts": fetch_casts(movie),
-        "reviews": fetch_reviews(movie),
-        "posters": fetch_posters(movie),
+        **res,
+        **{
+            "director": fetch_director(movie),
+            "casts": fetch_casts(movie),
+            "reviews": fetch_reviews(movie),
+            "posters": fetch_posters(movie),
+        },
     }
 
 
@@ -119,5 +118,5 @@ def fetch_posters(movie):
 
 
 if __name__ == "__main__":
-    # main()
+    fetch_information()
     download_images()
