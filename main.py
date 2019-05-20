@@ -3,7 +3,7 @@ import json
 import urllib
 import tmdbsimple as tmdb
 
-
+# 指定されたMovie IDの詳細をまるっと取得して一つのJSONにする
 def fetch_information():
     json_filepath = "results/result.json"
     key = os.environ.get("API_KEY")
@@ -15,10 +15,17 @@ def fetch_information():
     target_movie_ids = [
         447404,  # Detective Pikachu
         299534,  # Avengers Endgame
-        109445,  # Frozen
+        # 109445,  # Frozen
         335984,  # Blade Runner 2049 (because we already have a poster, it is easy to show demo for visitor)
-        315011,  # Shin Godzilla
-        118,  # Charlie and the Chocolate Factory
+        # 315011,  # Shin Godzilla
+        # 118,  # Charlie and the Chocolate Factory
+        # 180,  # Minority Report
+        # 105,  # Back to the future
+        157336,  # Interstellar
+        207703,  # Kingsman
+        # 27205,  # Inception
+        299537,  # Captain Marvel
+        324857,  # Spider Verse
     ]
 
     movies = [fetch_movie_detail(movie_id) for movie_id in target_movie_ids]
@@ -27,6 +34,7 @@ def fetch_information():
         json.dump(movies, f, indent=4)
 
 
+# 保存されているJSONをパースして必要な画像をすべてダウンロードする
 def download_images():
     target_filepath = "results/result.json"
     tmdb.API_KEY = os.environ.get("API_KEY")
@@ -34,13 +42,17 @@ def download_images():
     with open(target_filepath, "r") as f:
         movies = json.loads(f.read())
 
+    print('Number of Reviews')
+    for m in movies:        
+        print(f'{m["title"]}: {m['reviews']}')
+
     poster_images = flatten([m["posters"] for m in movies])
 
     for path in poster_images:
         url = "https://image.tmdb.org/t/p/w1280" + path
         print(url)
         data = urllib.request.urlopen(url).read()
-        dst_path = "results/images/posters/" + path
+        dst_path = "results/images/posters" + path
         with open(dst_path, mode="wb") as f:
             f.write(data)
 
