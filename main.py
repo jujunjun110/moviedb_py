@@ -1,8 +1,10 @@
 import os
+import json
 import tmdbsimple as tmdb
 
 
 def main():
+    tmdb.API_KEY = os.environ.get("API_KEY")
     target_movie_ids = [
         447404,  # Detective Pikachu
         299534,  # Avengers Endgame
@@ -12,11 +14,20 @@ def main():
         315011,  # Shin Godzilla
     ]
 
-    tmdb.API_KEY = os.environ.get("API_KEY")
-    for movie_id in target_movie_ids:
-        movie = tmdb.Movies(movie_id)
-        response = movie.info()
-        print(movie.title)
+    final_result = {}
+
+    final_result["title"] = [
+        fetch_movie_detail(movie_id) for movie_id in target_movie_ids
+    ]
+
+    with open("results/result.json", "w") as f:
+        json.dump(final_result, f)
+
+
+def fetch_movie_detail(movie_id: int):
+    movie = tmdb.Movies(movie_id)
+    response = movie.info()
+    return movie.title
 
 
 if __name__ == "__main__":
