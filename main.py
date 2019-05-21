@@ -117,7 +117,7 @@ def fetch_casts(movie):
     for cast in main_casts:
         movie_candidates = tmdb.People(cast["id"]).movie_credits()["cast"]
         # 20個まで
-        cast["movies"] = movies[: min(20, len(movie_candidates))]
+        cast["movies"] = movie_candidates[: min(20, len(movie_candidates))]
 
     return main_casts
 
