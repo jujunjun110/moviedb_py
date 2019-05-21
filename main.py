@@ -15,17 +15,17 @@ def fetch_information():
     target_movie_ids = [
         447404,  # Detective Pikachu
         299534,  # Avengers Endgame
-        # 109445,  # Frozen
         335984,  # Blade Runner 2049 (because we already have a poster, it is easy to show demo for visitor)
+        157336,  # Interstellar
+        207703,  # Kingsman
+        299537,  # Captain Marvel
+        324857,  # Spider Verse
+        # 109445,  # Frozen
         # 315011,  # Shin Godzilla
         # 118,  # Charlie and the Chocolate Factory
         # 180,  # Minority Report
         # 105,  # Back to the future
-        157336,  # Interstellar
-        207703,  # Kingsman
         # 27205,  # Inception
-        299537,  # Captain Marvel
-        324857,  # Spider Verse
     ]
 
     movies = [fetch_movie_detail(movie_id) for movie_id in target_movie_ids]
@@ -37,31 +37,30 @@ def fetch_information():
 # 保存されているJSONをパースして必要な画像をすべてダウンロードする
 def download_images():
     target_filepath = "results/result.json"
+    image_base = "https://image.tmdb.org/t/p/w1280"
     tmdb.API_KEY = os.environ.get("API_KEY")
 
     with open(target_filepath, "r") as f:
         movies = json.loads(f.read())
 
-    print('Number of Reviews')
     for m in movies:        
-        print(f'{m["title"]}: {m['reviews']}')
+        print(f'{m["title"]}: {m['reviews']} Reviews')
 
     poster_images = flatten([m["posters"] for m in movies])
+    director_images = [m["director"]["profile_path"] for m in movies]
+    cast_images = [c["profile_path"] for c in flatten([m["casts"] for m in movies])]
+    people_images = director_images + cast_images
 
     for path in poster_images:
-        url = "https://image.tmdb.org/t/p/w1280" + path
+        url = image_base + path
         print(url)
         data = urllib.request.urlopen(url).read()
         dst_path = "results/images/posters" + path
         with open(dst_path, mode="wb") as f:
             f.write(data)
 
-    director_images = [m["director"]["profile_path"] for m in movies]
-    cast_images = [c["profile_path"] for c in flatten([m["casts"] for m in movies])]
-    people_images = director_images + cast_images
-
     for path in people_images:
-        url = "https://image.tmdb.org/t/p/w1280" + path
+        url = image_base + path
         print(url)
         data = urllib.request.urlopen(url).read()
         dst_path = "results/images/people" + path
