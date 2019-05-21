@@ -103,7 +103,8 @@ def fetch_director(movie):
     # 1人まで
     d = candidates[0]
     movies = tmdb.People(d["id"]).movie_credits()
-    d["movies"] = [c for c in movies["crew"] if c["job"] == "Director"]
+    movie_candidates = [c for c in movies["crew"] if c["job"] == "Director"]
+    d["movies"] = movie_candidates[: min(20, len(movie_candidates))]
     return d
 
 
@@ -114,9 +115,9 @@ def fetch_casts(movie):
     main_casts = candidates[0 : min(2, len(candidates))]
 
     for cast in main_casts:
-        movies = tmdb.People(cast["id"]).movie_credits()
+        movie_candidates = tmdb.People(cast["id"]).movie_credits()["cast"]
         # 20個まで
-        cast["movies"] = movies["cast"][0 : min(20, len(candidates))]
+        cast["movies"] = movies[: min(20, len(movie_candidates))]
 
     return main_casts
 
@@ -124,13 +125,13 @@ def fetch_casts(movie):
 def fetch_reviews(movie):
     candidates = movie.reviews()["results"]
     # 20個まで
-    return candidates[0 : min(20, len(candidates))]
+    return candidates[: min(20, len(candidates))]
 
 
 def fetch_posters(movie):
     candidates = movie.images()["posters"]
     # 20個まで
-    posters = candidates[0 : min(20, len(candidates))]
+    posters = candidates[: min(20, len(candidates))]
     return [p["file_path"] for p in posters]
 
 
