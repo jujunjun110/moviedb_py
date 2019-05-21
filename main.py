@@ -1,6 +1,7 @@
 import os
 import json
 import urllib
+import time
 import tmdbsimple as tmdb
 
 # 指定されたMovie IDの詳細をまるっと取得して一つのJSONにする
@@ -43,33 +44,38 @@ def download_images():
     with open(target_filepath, "r") as f:
         movies = json.loads(f.read())
 
-    for m in movies:        
-        print(f'{m["title"]}: {m['reviews']} Reviews')
+    for m in movies:
+        print(f'{m["title"]}: {len(m["reviews"])} Reviews')
 
-    poster_images = flatten([m["posters"] for m in movies])
-    director_images = [m["director"]["profile_path"] for m in movies]
-    cast_images = [c["profile_path"] for c in flatten([m["casts"] for m in movies])]
-    people_images = director_images + cast_images
+    directors = [m["director"] for m in movies]
+    casts = flatten([m["casts"] for m in movies])
+    people = directors + casts
 
-    for path in poster_images:
-        url = image_base + path
-        print(url)
-        data = urllib.request.urlopen(url).read()
-        dst_path = "results/images/posters" + path
-        with open(dst_path, mode="wb") as f:
-            f.write(data)
+    movies_of_people = flatten([p["movies"] for p in people])
+    posters_of_people = [m["poster_path"] for m in movies_of_people]
+    posters_of_movies = flatten([m["posters"] for m in movies])
 
-    for path in people_images:
-        url = image_base + path
-        print(url)
-        data = urllib.request.urlopen(url).read()
-        dst_path = "results/images/people" + path
-        with open(dst_path, mode="wb") as f:
-            f.write(data)
+    portraits = compact([c["profile_path"] for c in people])
+    posters = compact(posters_of_movies + posters_of_people)
+
+    for (directory, filenames) in [("people", portraits), ("posters", posters)]:
+        os.makedirs(f"results/images/{directory}", exist_ok=True)
+        for filename in filenames:
+            time.sleep(0.2)
+            url = image_base + filename
+            print(url)
+            dst_path = f"results/images/{directory}/{filename}"
+            data = urllib.request.urlopen(url).read()
+            with open(dst_path, mode="wb") as f:
+                f.write(data)
 
 
 def flatten(nested_list):
     return sum(nested_list, [])
+
+
+def compact(none_containing_list):
+    return [item for item in none_containing_list if item is not None]
 
 
 def fetch_movie_detail(movie_id: int):
